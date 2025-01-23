@@ -1,7 +1,8 @@
 import requests
+from gpt4all import GPT4All
 
 # Informations nécessaires pour la connexion
-API_URL = "http://localhost/apirest.php/"
+API_URL = "http://10.3.5.222/apirest.php/"
 APP_TOKEN = "MT76sMEzOfX6gz6zq6E66ZM9DOcoCtOwC4PaoerC"  # Token d'application généré dans GLPI
 USER_TOKEN = "bBACPqvhiEmllVpxJrXgKTfILYR8CKk8sHU0XqLF"  # Token d'utilisateur généré dans GLPI
 
@@ -58,6 +59,18 @@ try:
                     json=followup_data
                 )
 
+                 # Initialiser le modèle GPT4All
+                model = GPT4All("Meta-Llama-3-8B-Instruct.Q4_0.gguf")
+                with model.chat_session() as session:
+                    ai_response = session.generate(content, max_tokens=200)
+                
+                data = {
+                    "input": {
+                        "tickets_id": ticket_id,
+                        "content": ai_response
+                    }
+                }
+                        
                 if followup_response.status_code == 201:
                     print(f"Suivi ajouté au ticket ID: {ticket['id']}")
 
